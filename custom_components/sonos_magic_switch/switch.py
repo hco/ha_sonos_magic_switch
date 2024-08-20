@@ -128,7 +128,7 @@ class SonosMagicSwitch(SwitchEntity):
         )
 
     def turn_on(self, **kwargs: Any) -> None:
-        """If there is no group that is playing, play the media player, otherwise join the largest playing group."""
+        """Join group or start playing if no group exists."""
         if not self._media_player_entity_id:
             return
 
