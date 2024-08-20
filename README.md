@@ -8,10 +8,10 @@ This is still a work in progress, and is not ready for use.
 [![GitHub Activity][commits-shield]][commits]
 [![License][license-shield]](LICENSE)
 
-Integration which adds a switch to SONOS players.
-Turning it **on** will join the largest group of sonos players. If there is no playing group, it will try to start playing on the current player, with the last played source.
+_Home Assistant Integration which adds a magic🪄 switch to SONOS players._
 
-If you turn it **off**, it will leave the group, or stop playing.
+- Turning it **on** will join the largest group of sonos players. If there is no playing group, it will try to start playing on the current player, with the last played source.
+- If you turn it **off**, it will leave the group, or stop playing.
 
 **This integration will set up the following platforms.**
 
