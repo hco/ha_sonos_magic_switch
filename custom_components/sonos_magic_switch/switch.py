@@ -1,26 +1,30 @@
-from typing import Any
+"""Module providing the Sonos Magic Switch platform."""
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.core import State
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_state_change_event
 
+from .const import LOGGER
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up the Sonos Magic Switch platform."""
     """ print the config_entry object to see what it contains """
 
     device_registry = dr.async_get(hass)
 
-    # device_registry.devices contains all devices in the device registry.
-    # iterate over all of them and print them
-    # for device in device_registry.devices.values():
-    #     pprint.pp(device.identifiers)
-    #     pprint.pprint(device)
+    LOGGER.debug("Setting up for config entry '%s'", config_entry.entry_id)
 
-    # filter all devices that contain a tuple whichs first element is "sonos" in the identifiers
-    # and that have a name
+    # filter all devices that contain a tuple whichs first element is "sonos" in the
+    # identifiers and that have a name
     sonos_devices = [
         device
         for device in device_registry.devices.values()
@@ -38,7 +42,7 @@ class SonosMagicSwitch(SwitchEntity):
     _original_device: dr.DeviceEntry
     _media_player_entity_id: str
 
-    def __init__(self, device: dr.DeviceEntry):
+    def __init__(self, device: dr.DeviceEntry) -> None:
         """Initialize the Sonos Magic Switch."""
         self._original_device = device
         """ abort if the device has no name """
@@ -49,15 +53,6 @@ class SonosMagicSwitch(SwitchEntity):
         self._attr_unique_id = device.id + "_sonos_magic_switch"
         self._attr_is_on = False
 
-        # get media_player entity_id from the device
-        # mediay_player_entity_id = [
-        #     identifier[1]
-        #     for identifier in device.identifiers
-        #     if identifier[0] == "sonos"
-        # ][0]
-
-        # unsub = async_track_state_change_event(self.hass)
-
     async def async_added_to_hass(self) -> None:
         """Run when this Entity has been added to HA."""
         # Importantly for a push integration, the module that will be getting updates
@@ -66,7 +61,6 @@ class SonosMagicSwitch(SwitchEntity):
         # called where ever there are changes.
         # The call back registration is done once this entity is registered with HA
         # (rather than in the __init__)
-        # self._roller.register_callback(self.async_write_ha_state)
         self._media_player_entity_id = await self.__get_media_player_entity_id()
 
         if not self._media_player_entity_id:
@@ -78,7 +72,7 @@ class SonosMagicSwitch(SwitchEntity):
         self.__update_entity_picture()
         await self._update_state_from_media_player()
 
-    def __update_entity_picture(self):
+    def __update_entity_picture(self) -> None:
         largest_group_state = self.__find_largest_group_of_media_players()
 
         if not largest_group_state:
@@ -93,20 +87,20 @@ class SonosMagicSwitch(SwitchEntity):
             entity_registry, self._original_device.id
         )
 
-        media_player = [
+        media_player = next(
             entity
             for entity in device_entities
             if entity.entity_id.startswith("media_player.")
-        ][0]
+        )
 
         return media_player.entity_id
 
-    async def _media_player_state_changed(self, event):
+    async def _media_player_state_changed(self) -> None:
         await self._update_state_from_media_player()
 
     async def _update_state_from_media_player(
         self,
-    ):
+    ) -> None:
         media_player_state = self.hass.states.get(self._media_player_entity_id)
         if not media_player_state:
             return
@@ -127,7 +121,7 @@ class SonosMagicSwitch(SwitchEntity):
             identifiers=self._original_device.identifiers,
         )
 
-    def turn_on(self, **kwargs: Any) -> None:
+    def turn_on(self) -> None:
         """Join group or start playing if no group exists."""
         if not self._media_player_entity_id:
             return
@@ -176,8 +170,8 @@ class SonosMagicSwitch(SwitchEntity):
 
         return media_player_states[0]
 
-    def turn_off(self, **kwargs: Any) -> None:
-        """If the media player is alone, pause it, otherwise remove it from the group."""
+    def turn_off(self) -> None:
+        """If the media player is alone, pause it, otherwise leave group."""
         state = self.hass.states.get(self._media_player_entity_id)
         if not state:
             return
