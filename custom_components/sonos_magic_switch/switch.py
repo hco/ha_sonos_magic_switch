@@ -29,6 +29,7 @@ async def async_setup_entry(
         device
         for device in device_registry.devices.values()
         if any(identifier[0] == "sonos" for identifier in device.identifiers)
+        if get_media_player_for_device(hass, device.id) is not None
     ]
 
     async_add_entities(
@@ -42,9 +43,12 @@ def get_media_player_for_device(hass: HomeAssistant, device_id: str) -> State | 
     device_entities = er.async_entries_for_device(entity_registry, device_id)
 
     return next(
-        entity
-        for entity in device_entities
-        if entity.entity_id.startswith("media_player.")
+        (
+            entity
+            for entity in device_entities
+            if entity.entity_id.startswith("media_player.")
+        ),
+        None,
     )
 
 
