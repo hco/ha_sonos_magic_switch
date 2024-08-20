@@ -2,7 +2,8 @@ from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.core import State
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.event import async_track_state_change_event
 
 
@@ -177,7 +178,6 @@ class SonosMagicSwitch(SwitchEntity):
 
     def turn_off(self, **kwargs: Any) -> None:
         """If the media player is alone, pause it, otherwise remove it from the group."""
-
         state = self.hass.states.get(self._media_player_entity_id)
         if not state:
             return
