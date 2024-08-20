@@ -9,18 +9,15 @@ from .const import DOMAIN
 
 async def _async_has_devices(hass: HomeAssistant) -> bool:
     """Return if there are devices that can be discovered."""
-    # TODO Check if there are any devices that can be discovered in the network.
-    #    devices = await hass.async_add_executor_job(my_pypi_dependency.discover)
-    # return len(devices) > 0
-
     device_registry = dr.async_get(hass)
-    print("printing devices in has_devices")
-    # device_registry.devices contains all devices in the device registry.
-    # iterate over all of them and print them
-    for device in device_registry.devices.values():
-        print(device)
 
-    return True
+    sonos_devices = [
+        device
+        for device in device_registry.devices.values()
+        if any(identifier[0] == "sonos" for identifier in device.identifiers)
+    ]
+
+    return len(sonos_devices) > 0
 
 
 config_entry_flow.register_discovery_flow(
