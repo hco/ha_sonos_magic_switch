@@ -10,5 +10,6 @@
   "issue_tracker": "https://github.com/hco/ha-sonos-magic-switch/issues",
   "requirements": [],
   "ssdp": [],
+  "version": "0.1.0",
   "zeroconf": []
 }
