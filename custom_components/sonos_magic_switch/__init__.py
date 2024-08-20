@@ -12,13 +12,12 @@ PLATFORMS: list[Platform] = [Platform.SWITCH]
 
 # TODO Create ConfigEntry type alias with API object
 # Alias name should be prefixed by integration name
-# type New_NameConfigEntry = ConfigEntry[MyApi]  # noqa: F821
+# type New_NameConfigEntry = ConfigEntry[MyApi]
 
 
 # TODO Update entry annotation
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Sonos Magic Switch from a config entry."""
-
     # TODO 1. Create API instance
     # TODO 2. Validate the API connection (and authentication)
     # TODO 3. Store an API object for your platforms to access
