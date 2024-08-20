@@ -72,14 +72,43 @@ class SonosMagicSwitch(SwitchEntity):
         self.__update_entity_picture()
         await self._update_state_from_media_player()
 
-    def __update_entity_picture(self) -> None:
+    def __get_entity_picture(self) -> str | None:
+        if not self._media_player_entity_id:
+            return None
+
+        media_player_state = self.hass.states.get(self._media_player_entity_id)
+
+        if (
+            media_player_state
+            and media_player_state.state == "playing"
+            and (entity_picture := media_player_state.attributes.get("entity_picture"))
+        ):
+            LOGGER.debug(
+                "Retrieving entity picture for %s from media player", self.entity_id
+            )
+            return entity_picture
+
         largest_group_state = self.__find_largest_group_of_media_players()
 
-        if not largest_group_state:
-            self._attr_entity_picture = None
-            return
+        if largest_group_state and (
+            entity_picture := self.hass.states.get(
+                largest_group_state.entity_id
+            ).attributes.get("entity_picture")
+        ):
+            LOGGER.debug(
+                "Retrieving entity picture for %s from largest group", self.entity_id
+            )
+            return entity_picture
 
-        self._attr_entity_picture = largest_group_state.entity_id
+        LOGGER.debug(
+            "Did not find a group for %s, setting entity picture to None",
+            self.entity_id,
+        )
+
+        return None
+
+    def __update_entity_picture(self) -> None:
+        self._attr_entity_picture = self.__get_entity_picture()
 
     async def __get_media_player_entity_id(self) -> str:
         entity_registry = er.async_get(self.hass)
@@ -96,6 +125,7 @@ class SonosMagicSwitch(SwitchEntity):
         return media_player.entity_id
 
     async def _media_player_state_changed(self, event: Event) -> None:  # noqa: ARG002, required for async_track_state_change_event
+        self.__update_entity_picture()
         await self._update_state_from_media_player()
 
     async def _update_state_from_media_player(
