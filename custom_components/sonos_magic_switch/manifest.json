@@ -1,0 +1,13 @@
+{
+  "domain": "sonos_magic_switch",
+  "name": "Sonos Magic Switch",
+  "codeowners": ["@hco"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/sonos_magic_switch",
+  "homekit": {},
+  "iot_class": "calculated",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": []
+}
