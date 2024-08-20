@@ -40,7 +40,6 @@ If you want to contribute to this please read the [Contribution guidelines](CONT
 
 ---
 
-[integration_blueprint]: https://github.com/hco/ha-sonos-magic-switch
 [commits-shield]: https://img.shields.io/github/commit-activity/y/hco/ha-sonos-magic-switch.svg?style=for-the-badge
 [commits]: https://github.com/hco/ha-sonos-magic-switch/commits/main
 [exampleimg]: example.png
