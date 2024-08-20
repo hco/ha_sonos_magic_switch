@@ -36,6 +36,18 @@ async def async_setup_entry(
     )
 
 
+def get_media_player_for_device(hass: HomeAssistant, device_id: str) -> State | None:
+    """Retrieve the media player entity associated with the given device ID."""
+    entity_registry = er.async_get(hass)
+    device_entities = er.async_entries_for_device(entity_registry, device_id)
+
+    return next(
+        entity
+        for entity in device_entities
+        if entity.entity_id.startswith("media_player.")
+    )
+
+
 class SonosMagicSwitch(SwitchEntity):
     """Representation of a Sonos Magic Switch."""
 
@@ -112,18 +124,9 @@ class SonosMagicSwitch(SwitchEntity):
         return None
 
     async def __get_media_player_entity_id(self) -> str:
-        entity_registry = er.async_get(self.hass)
-        device_entities = er.async_entries_for_device(
-            entity_registry, self._original_device.id
-        )
-
-        media_player = next(
-            entity
-            for entity in device_entities
-            if entity.entity_id.startswith("media_player.")
-        )
-
-        return media_player.entity_id
+        return get_media_player_for_device(
+            self.hass, self._original_device.id
+        ).entity_id
 
     async def _media_player_state_changed(self, event: Event) -> None:  # noqa: ARG002, required for async_track_state_change_event
         self.__update_entity_picture()
