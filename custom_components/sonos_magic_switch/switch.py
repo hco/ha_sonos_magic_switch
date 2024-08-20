@@ -108,7 +108,8 @@ class SonosMagicSwitch(SwitchEntity):
         return None
 
     def __update_entity_picture(self) -> None:
-        self._attr_entity_picture = self.__get_entity_picture()
+        # self._attr_entity_picture = self.__get_entity_picture()  # noqa: ERA001
+        return None
 
     async def __get_media_player_entity_id(self) -> str:
         entity_registry = er.async_get(self.hass)
