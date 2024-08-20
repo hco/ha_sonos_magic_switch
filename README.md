@@ -1,4 +1,8 @@
-# Integration Blueprint
+# WORK IN PROGRESS
+
+This is still a work in progress, and is not ready for use.
+
+# Sonos Magic Switch Home Assistant Integration
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -14,11 +18,9 @@ _Integration to integrate with [integration_blueprint][integration_blueprint]._
 
 **This integration will set up the following platforms.**
 
-Platform | Description
--- | --
-`binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from blueprint API.
-`switch` | Switch something `True` or `False`.
+| Platform | Description                                    |
+| -------- | ---------------------------------------------- |
+| `switch` | Join or leave a sonos group `True` or `False`. |
 
 ## Installation
 
@@ -38,7 +40,7 @@ Platform | Description
 
 If you want to contribute to this please read the [Contribution guidelines](CONTRIBUTING.md)
 
-***
+---
 
 [integration_blueprint]: https://github.com/ludeeus/integration_blueprint
 [buymecoffee]: https://www.buymeacoffee.com/ludeeus
